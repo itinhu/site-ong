@@ -9,17 +9,21 @@
   <meta name="theme-color" content="#244c38">
   <title>Raízes do Amanhã | Cultivando um futuro melhor</title>
   <link rel="icon" href="imagens/folha.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/style.css">
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script defer src="js/script.js"></script>
 </head>
 
 <body>
+  <noscript><p class="container aviso">Ative o JavaScript para usar o simulador, a busca de CEP e o mapa.</p></noscript>
   <a class="pular" href="#conteudo">Pular para o conteúdo</a>
   <header class="cabecalho">
     <div class="container barra">
       <a class="marca" href="#inicio" aria-label="Raízes do Amanhã, início"><img src="imagens/folha.svg" width="40"
           height="40" alt=""><span>raízes<span class="marca-menor">DO AMANHÃ</span></span></a>
       <nav id="navegacao" aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#sobre">Sobre nós</a><a
-          href="#projetos">Projetos</a><a href="#contato">Contato</a><a class="botao pequeno" href="#doar">Como ajudar
+          href="#projetos">Projetos</a><a href="#contato">Contato</a><a href="#voluntario">Voluntariado</a><a href="#simulador">Simulador</a><a class="botao pequeno" href="#doar">Como ajudar
           <span aria-hidden="true">↗</span></a></nav>
     </div>
   </header>
@@ -143,7 +147,7 @@
           <p class="etiqueta">FAÇA PARTE DESSA MUDANÇA</p>
           <h2 id="titulo-doar">Há muitas formas<br>de <em>semear.</em></h2>
           <p>Seu tempo, seu conhecimento e sua vontade de ajudar podem fazer a diferença.</p><a class="botao claro"
-            href="#contato">Quero ser voluntário <span aria-hidden="true">↗</span></a>
+            href="#voluntario">Quero ser voluntário <span aria-hidden="true">↗</span></a>
         </div>
         <div class="formas">
           <article><span aria-hidden="true">01</span>
@@ -192,6 +196,60 @@
         <p>Endereço de exemplo, sem recebimento de mensagens.</p><a class="botao" href="#doar">Rever formas de ajudar
           <span aria-hidden="true">↑</span></a>
       </div>
+    </section>
+
+    <section class="secao container" id="simulador" aria-labelledby="titulo-simulador">
+      <p class="etiqueta">CADA SEMENTE CONTA</p>
+      <h2 id="titulo-simulador">Simule seu <em>impacto.</em></h2>
+      <p>Uma ideia do que podemos cultivar juntos. Simulação educativa, sem recebimento de dinheiro.</p>
+      <div class="interativo-grid">
+        <div class="painel">
+          <label for="valor">Valor em reais (R$)</label>
+          <input id="valor" type="number" min="0.01" max="1000000" step="0.01" value="50" aria-describedby="valor-erro">
+          <p id="valor-erro" class="erro" aria-live="polite"></p>
+          <label for="moeda">Converter para</label>
+          <select id="moeda"><option value="USD">Dólar (USD)</option><option value="EUR">Euro (EUR)</option></select>
+          <button class="botao" id="atualizar-cotacao" type="button">Atualizar cotação</button>
+        </div>
+        <div class="painel resultado" aria-live="polite" aria-atomic="true">
+          <h3>O que sua ajuda pode semear</h3>
+          <p id="impacto"></p>
+          <p id="conversao"></p>
+          <p id="cotacao-status" role="status"></p>
+          <p class="ajuda">Estimativa ilustrativa: R$ 5 por muda. Conversão pela taxa de compra da AwesomeAPI, sem taxas de operação. A fonte pode usar cache de 1 minuto.</p>
+        </div>
+      </div>
+    </section>
+    <section class="secao projetos" id="voluntario" aria-labelledby="titulo-voluntario">
+      <div class="container">
+        <p class="etiqueta">CULTIVE COM A GENTE</p>
+        <h2 id="titulo-voluntario">Seja um <em>voluntário.</em></h2>
+        <p>Experimente o cadastro. Os dados não são salvos nem enviados à ONG. Apenas o CEP é consultado no ViaCEP.</p>
+        <form id="form-voluntario" class="painel" novalidate>
+          <div class="campos">
+            <div><label for="nome">Nome completo</label><input id="nome" name="nome" autocomplete="name" required minlength="3" maxlength="100" aria-describedby="nome-erro"><p id="nome-erro" class="erro" aria-live="polite"></p></div>
+            <div><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="254" aria-describedby="email-erro"><p id="email-erro" class="erro" aria-live="polite"></p></div>
+            <div><label for="cep">CEP</label><input id="cep" name="cep" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000" required pattern="[0-9]{5}-?[0-9]{3}" aria-describedby="cep-erro cep-status"><p id="cep-erro" class="erro" aria-live="polite"></p></div>
+            <div><label for="rua">Rua</label><input id="rua" name="rua" autocomplete="address-line1" maxlength="150"></div>
+            <div><label for="bairro">Bairro</label><input id="bairro" name="bairro" maxlength="100"></div>
+            <div><label for="cidade">Cidade</label><input id="cidade" name="cidade" autocomplete="address-level2" required maxlength="100" aria-describedby="cidade-erro"><p id="cidade-erro" class="erro" aria-live="polite"></p></div>
+            <div><label for="uf">UF</label><select id="uf" name="uf" autocomplete="address-level1" required aria-describedby="uf-erro"><option value="">Selecione</option></select><p id="uf-erro" class="erro" aria-live="polite"></p></div>
+            <div><label for="interesse">Como quer ajudar?</label><select id="interesse" name="interesse"><option>Plantio e hortas</option><option>Oficinas educativas</option><option>Organização das ações</option></select></div>
+          </div>
+          <p id="cep-status" role="status">Digite o CEP para preencher o endereço. Você também pode preenchê-lo manualmente.</p>
+          <button class="botao" type="submit">Simular inscrição</button>
+          <p id="form-status" role="status"></p>
+        </form>
+      </div>
+    </section>
+    <section class="secao container" id="localizacao" aria-labelledby="titulo-mapa">
+      <p class="etiqueta">ESPAÇOS PARA FLORESCER</p>
+      <h2 id="titulo-mapa">Nosso mapa de <em>possibilidades.</em></h2>
+      <p>Locais demonstrativos em Salvador (BA), sem vínculo com a ONG fictícia. Selecione um local ou explore os marcadores.</p>
+      <div class="acoes mapa-acoes"><button type="button" class="botao" data-local="0">Campo Grande</button><button type="button" class="botao" data-local="1">Dique do Tororó</button></div>
+      <p id="mapa-status" role="status"></p>
+      <div id="mapa" aria-label="Mapa interativo dos locais demonstrativos"></div>
+      <p><a href="https://www.openstreetmap.org/#map=14/-12.988/-38.516" target="_blank" rel="noopener noreferrer">Consultar a região no OpenStreetMap</a></p>
     </section>
   </main>
   <footer>
